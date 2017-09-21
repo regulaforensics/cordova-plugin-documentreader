@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-plugin-documentreader" version="0.1.0">
+    <name>DocumentReader</name>
+    <description>Cordova plugin for identification documents reading and validation</description>
+    <license>commercial</license>
+    <keywords>cordova,document,reader,docreader,regula,scanner</keywords>
+
+    <js-module name="DocumentReader" src="www/DocumentReader.js">
+        <clobbers target="DocumentReader" />
+    </js-module>
+
+    <dependency id="cordova-plugin-add-swift-support" version="1.6.1"/>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/widget">
+            <feature name="DocumentReader">
+                <param name="ios-package" value="RGLDocumentReader"/>
+            </feature>
+        </config-file>
+        <header-file src="src/ios/RGLDocumentReader.h" />
+        <source-file src="src/ios/RGLDocumentReader.m" />
+        <framework src="src/ios/DocumentReader.framework" custom="true" embed="true" />
+        <framework src="src/ios/DocumentReaderCore.framework" custom="true" embed="true" />
+    <preference name="CAMERA_USAGE_DESCRIPTION" default=" " />
+    <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
+        <string>$CAMERA_USAGE_DESCRIPTION</string>
+    </config-file>
+    </platform>
+</plugin>
