@@ -1,0 +1,31 @@
+{
+  "name": "cordova-plugin-documentreader",
+  "version": "0.1.0",
+  "description": "Cordova plugin for identification documents reading and validation",
+  "cordova": {
+    "id": "cordova-plugin-documentreader",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/regulaforensics/cordova-plugin-documentreader.git"
+  },
+  "keywords": [
+    "cordova",
+    "document",
+    "reader",
+    "docreader",
+    "regula",
+    "scanner",
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "author": "RegulaForensics",
+  "license": "commercial",
+  "bugs": {
+    "url": "https://github.com/regulaforensics/cordova-plugin-documentreader/issues"
+  },
+  "homepage": "https://github.com/regulaforensics/cordova-plugin-documentreader#readme"
+}
