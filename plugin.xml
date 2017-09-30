@@ -11,8 +11,15 @@
     </js-module>
 
     <dependency id="cordova-plugin-add-swift-support" version="1.6.1"/>
+    <dependency id="cordova-plugin-cocoapod-support"/>
+
+<pods-config ios-min-version="8.0" uses-frameworks="true"/>
 
     <platform name="ios">
+        <pods-config ios-min-version="8.0" use-frameworks="true">
+        </pods-config>
+        <pod name="DocumentReader" />
+        <pod name="DocumentReaderMRZBarcode" />
         <config-file target="config.xml" parent="/widget">
             <feature name="DocumentReader">
                 <param name="ios-package" value="RGLDocumentReader"/>
@@ -20,8 +27,6 @@
         </config-file>
         <header-file src="src/ios/RGLDocumentReader.h" />
         <source-file src="src/ios/RGLDocumentReader.m" />
-        <framework src="src/ios/DocumentReader.framework" custom="true" embed="true" />
-        <framework src="src/ios/DocumentReaderCore.framework" custom="true" embed="true" />
     <preference name="CAMERA_USAGE_DESCRIPTION" default=" " />
     <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
         <string>$CAMERA_USAGE_DESCRIPTION</string>

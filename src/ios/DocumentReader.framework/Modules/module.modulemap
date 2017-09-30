@@ -1,4 +1,0 @@
-framework module DocumentReader {
-    header "DocumentReader-Swift.h"
-    requires objc
-}
