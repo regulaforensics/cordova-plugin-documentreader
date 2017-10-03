@@ -1,12 +1,12 @@
 {
   "name": "cordova-plugin-documentreader",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Cordova plugin for identification documents reading and validation",
   "cordova": {
     "id": "cordova-plugin-documentreader",
     "platforms": [
       "ios",
-	  "android"
+      "android"
     ]
   },
   "repository": {
@@ -22,7 +22,7 @@
     "scanner",
     "ecosystem:cordova",
     "cordova-ios",
-	"cordova-android"
+    "cordova-android"
   ],
   "author": "RegulaForensics",
   "license": "commercial",
