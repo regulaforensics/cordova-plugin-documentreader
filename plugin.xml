@@ -1,19 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="cordova-plugin-documentreader" version="0.1.0">
-    <name>DocumentReader</name>
-    <description>Cordova plugin for identification documents reading and validation</description>
-    <license>commercial</license>
-    <keywords>cordova,document,reader,docreader,regula,scanner</keywords>
-
-    <js-module name="DocumentReader" src="www/DocumentReader.js">
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-documentreader" version="0.1.0" xmlns="http://apache.org/cordova/ns/plugins/1.0">
+	<name>DocumentReader</name>
+	<description>Cordova plugin for identification documents reading and validation</description>
+	<license>commercial</license>
+	<keywords>cordova,document,reader,docreader,regula,scanner</keywords>
+	
+	<js-module name="DocumentReader" src="www/DocumentReader.js">
         <clobbers target="DocumentReader" />
     </js-module>
 
     <dependency id="cordova-plugin-add-swift-support" version="1.6.1"/>
     <dependency id="cordova-plugin-cocoapod-support"/>
-
-<pods-config ios-min-version="8.0" uses-frameworks="true"/>
 
     <platform name="ios">
         <pods-config ios-min-version="8.0" use-frameworks="true">
@@ -32,4 +29,22 @@
         <string>$CAMERA_USAGE_DESCRIPTION</string>
     </config-file>
     </platform>
+	
+	<platform name="android">
+		<config-file parent="/*" target="res/xml/config.xml">
+			<feature name="DocumentReader">
+				<param name="android-package" value="cordova.plugin.documentreader.DocumentReader" />
+			</feature>
+		</config-file>
+		<framework src="src/android/documentreader.gradle" custom="true" type="gradleReference"/>
+		<config-file parent="/*" target="AndroidManifest.xml">
+			<uses-permission android:name="android.permission.CAMERA" />
+			<uses-feature android:name="android.hardware.camera" />
+			<uses-feature android:name="android.hardware.camera.autofocus"/>
+		</config-file>
+		<edit-config file="AndroidManifest.xml" target="/manifest/uses-sdk" mode="merge">
+			<uses-sdk android:minSdkVersion="19" android:targetSdkVersion="23" />
+		</edit-config>
+		<source-file src="src/android/DocumentReader.java" target-dir="src/cordova.plugin.documentreader" />
+	</platform>
 </plugin>

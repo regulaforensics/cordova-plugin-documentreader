@@ -5,7 +5,8 @@
   "cordova": {
     "id": "cordova-plugin-documentreader",
     "platforms": [
-      "ios"
+      "ios",
+	  "android"
     ]
   },
   "repository": {
@@ -20,7 +21,8 @@
     "regula",
     "scanner",
     "ecosystem:cordova",
-    "cordova-ios"
+    "cordova-ios",
+	"cordova-android"
   ],
   "author": "RegulaForensics",
   "license": "commercial",
