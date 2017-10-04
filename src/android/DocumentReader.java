@@ -20,35 +20,32 @@ import java.util.ArrayList;
  * This class echoes a string called from JavaScript.
  */
 public class DocumentReader extends CordovaPlugin {
-private CallbackContext callbackContext;
+    private CallbackContext callbackContext;
+    private boolean status;
 
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if (action.equals("scanDocument")) {
+        this.callbackContext = callbackContext;
+        if(action.equals("initReader")){
             Object license = args.get(0);
-            this.callbackContext = callbackContext;
-            this.scanDocument(license);
+            this.initReader(license);
+            return true;
+        } else if(action.equals("scanDocument")){
+            this.scanDocument();
             return true;
         }
         return false;
     }
 
-    private void scanDocument(Object license){
+    private void initReader(Object license){
         try{
             if(license!=null){
                 byte[] licenseBytes = Base64.decode(license.toString(), Base64.DEFAULT);
                 StringBuilder stringBuilder = new StringBuilder();
-                boolean status = com.regula.documentreader.api.DocumentReader.Instance().initializeReader(cordova.getActivity(),licenseBytes, stringBuilder);
+                status = com.regula.documentreader.api.DocumentReader.Instance().initializeReader(cordova.getActivity(),licenseBytes, stringBuilder);
                 if(status){
-
-                    if(cordova.hasPermission(Manifest.permission.CAMERA))                    {
-                        showScanner();
-                    }
-                    else{
-                        cordova.requestPermission(this,1,Manifest.permission.CAMERA);
-                    }
-
+                    callbackContext.success();
                 } else {
                     callbackContext.error("Initialization failed");
                 }
@@ -57,6 +54,17 @@ private CallbackContext callbackContext;
             }
         } catch(Exception ex){
             callbackContext.error(ex.getMessage());
+        }
+    }
+
+    private void scanDocument(){
+        if(status){
+            if(cordova.hasPermission(Manifest.permission.CAMERA))                    {
+                showScanner();
+            }
+            else{
+                cordova.requestPermission(this,1,Manifest.permission.CAMERA);
+            }
         }
     }
 

@@ -9,8 +9,13 @@
 #import <Cordova/CDVPlugin.h>
 #import <Foundation/Foundation.h>
 
+@class DocReader;
+
 @interface RGLDocumentReader : CDVPlugin
 
+@property (nonatomic, strong) DocReader *docReader;
+
+- (void) initReader:(CDVInvokedUrlCommand*)command;
 - (void) scanDocument:(CDVInvokedUrlCommand*)command;
 
 @end

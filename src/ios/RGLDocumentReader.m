@@ -11,26 +11,36 @@
 
 @implementation RGLDocumentReader
 
+- (void) initReader:(CDVInvokedUrlCommand*)command {
+
+    NSData *licenseData = [[command arguments] objectAtIndex:0];
+
+    DocReader *docReader = [[DocReader alloc] initWithProcessParams:nil];
+    docReader.processParams.mrz = YES;
+    docReader.processParams.barcode = YES;
+    docReader.processParams.ocr = NO;
+    docReader.processParams.locate = NO;
+    docReader.processParams.imageQA = NO;
+    docReader.videoCaptureMotionControl = NO;
+
+    NSError *error = nil;
+    BOOL docReaderIsReady = [docReader initializeReaderWithLicense:licenseData error:&error];
+
+    self.docReader = docReader;
+
+    CDVPluginResult* pluginResult;
+    if (docReaderIsReady) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+    }
+    else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+    }
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
 - (void) scanDocument:(CDVInvokedUrlCommand*)command {
 
-    [self.commandDelegate runInBackground:^{
-
-        NSData *licenseData = [[command arguments] objectAtIndex:0];
-
-        DocReader *docReader = [[DocReader alloc] initWithProcessParams:nil];
-        docReader.processParams.mrz = YES;
-        docReader.processParams.barcode = YES;
-        docReader.processParams.ocr = NO;
-        docReader.processParams.locate = NO;
-        docReader.processParams.imageQA = NO;
-        docReader.videoCaptureMotionControl = NO;
-
-        NSError *error = nil;
-        BOOL docReaderIsReady = [docReader initializeReaderWithLicense:licenseData error:&error];
-
-        if (docReaderIsReady) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [docReader showScanner:self.viewController completion:^(DocReaderAction action, DocumentReaderResults *result, NSString *error) {
+                [self.docReader showScanner:self.viewController completion:^(DocReaderAction action, DocumentReaderResults *result, NSString *error) {
                     switch (action) {
                         case DocReaderActionComplete: {
                             if (result != nil) {
@@ -63,8 +73,5 @@
                         break;
                     }
                 }];
-            });
-        }
-    }];
-}    
+}
 @end
