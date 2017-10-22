@@ -12,6 +12,7 @@ import com.regula.documentreader.api.results.DocumentReaderResults;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -102,10 +103,18 @@ public class DocumentReader extends CordovaPlugin {
                     case DocReaderAction.COMPLETE:
                         if(documentReaderResults!=null && documentReaderResults.jsonResult!=null) {
                             ArrayList<String> strings = new ArrayList<String>();
+                            JSONArray jsonArray = new JSONArray();
+                            int index = 0;
                             for(DocumentReaderJsonResultGroup group : documentReaderResults.jsonResult.results) {
                                 strings.add(group.jsonResult);
+                                try {
+                                    jsonArray.put(index, new JSONObject(group.jsonResult));
+                                    index++;
+                                } catch (JSONException e) {
+                                    callbackContext.error(e.getMessage());
+                                }
                             }
-                            callbackContext.success(new Gson().toJson(strings));
+                            callbackContext.success(jsonArray);
                         }
                         break;
                     case DocReaderAction.CANCEL:
