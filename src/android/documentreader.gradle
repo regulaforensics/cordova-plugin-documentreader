@@ -4,13 +4,13 @@ repositories {
 			url "https://maven.google.com"
 		}
 		maven{
-			url "http://maven-dev.regulaforensics.com/RegulaDocumentReader"
+			url "http://maven.regulaforensics.com/RegulaDocumentReader"
 		}
 	}
 
 dependencies {
 	compile 'com.regula.documentreader.barcodemrz:core:+@aar'
-	compile ('com.regula.documentreader:api:2.0.68103@aar'){
+	compile ('com.regula.documentreader:api:+@aar'){
         transitive = true
     }
 }
