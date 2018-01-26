@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-documentreader",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Cordova plugin for identification documents reading and validation",
   "cordova": {
     "id": "cordova-plugin-documentreader",
