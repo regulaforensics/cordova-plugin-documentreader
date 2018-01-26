@@ -25,7 +25,7 @@
     <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
       <string>$CAMERA_USAGE_DESCRIPTION</string>
     </config-file>
-    <dependency id="cordova-plugin-add-swift-support" version="1.6.1" />
+    <dependency id="cordova-plugin-add-swift-support" />
     <dependency id="cordova-plugin-cocoapod-support" />
   </platform>
 
