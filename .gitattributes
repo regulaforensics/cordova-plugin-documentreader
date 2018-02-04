@@ -1,0 +1,2 @@
+src/ios/DocumentReader.framework/DocumentReader filter=lfs diff=lfs merge=lfs -text
+src/ios/DocumentReaderCore.framework/DocumentReaderCore filter=lfs diff=lfs merge=lfs -text
