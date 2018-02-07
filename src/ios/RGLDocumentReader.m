@@ -30,10 +30,10 @@
 
     CDVPluginResult* pluginResult;
     if (docReaderIsReady) {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:nil];
     }
     else {
-        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR];
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:error.localizedDescription];
     }
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }

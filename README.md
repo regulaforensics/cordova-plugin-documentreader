@@ -60,13 +60,13 @@ onDeviceReady: function() {
                                 function (message) {
                                     alert(message);
                                 },
-                                function () {
-                                    alert("Error calling Plugin");
+                                function (error) {
+                                    alert(error);
                                 }
                             );
                         },
-                        function () {
-                            alert("Error calling Plugin");
+                        function (error) {
+                            alert(error);
                         }
                     );
                 }
