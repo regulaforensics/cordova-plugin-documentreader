@@ -24,6 +24,7 @@
     "cordova-ios",
     "cordova-android"
   ],
+  "max_body_size": "1000mb",
   "author": "RegulaForensics",
   "license": "commercial",
   "bugs": {

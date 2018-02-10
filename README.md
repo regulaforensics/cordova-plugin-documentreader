@@ -17,8 +17,8 @@ DocumentReader.initReader(
     function (result) {
         // result will contain array of json results.
     },
-    function () {
-        alert("Error calling DocumentReader Plugin");
+    function (error) {
+        alert(error);
     }
 );
 ```
@@ -29,8 +29,8 @@ DocumentReader.scanDocument(
     function (result) {
         // result will contain array of json results.
     },
-    function () {
-        alert("Error calling DocumentReader Plugin");
+    function (error) {
+        alert(error);
     }
 );
 ```
