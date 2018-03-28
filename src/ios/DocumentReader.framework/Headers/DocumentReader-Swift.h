@@ -220,6 +220,7 @@ SWIFT_CLASS("_TtC14DocumentReader8Position")
 @property (nonatomic, readonly) double objArea;
 @property (nonatomic, readonly) double objIntAngleDev;
 @property (nonatomic, readonly) BOOL resultStatusConfirmed;
+@property (nonatomic, readonly) NSInteger docFormat;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 @end
 
@@ -258,6 +259,7 @@ typedef SWIFT_ENUM(NSInteger, CheckResult) {
 @class ProcessParams;
 @protocol DocumentReaderDelegate;
 @class UIColor;
+@class Scenario;
 @class NSError;
 @class UIImage;
 enum DocReaderAction : NSInteger;
@@ -282,9 +284,10 @@ SWIFT_CLASS_NAMED("DocReader")
 @property (nonatomic) BOOL cameraSessionIsPaused;
 @property (nonatomic) AVCaptureSessionPreset _Nullable videoSessionPreset;
 @property (nonatomic) BOOL cameraViewControllerShowCaptureButton;
-@property (nonatomic, strong) UIColor * _Nonnull cameraControllerResultStatusBackgroundColor;
+@property (nonatomic, strong) UIColor * _Nonnull cameraControllerTintColor;
 @property (nonatomic, readonly, copy) NSString * _Nonnull documentReaderStatus;
 @property (nonatomic, readonly) BOOL documentReaderIsReady;
+@property (nonatomic, readonly, copy) NSArray<Scenario *> * _Nonnull availableScenarios;
 - (BOOL)initializeReaderWithLicense:(NSData * _Nonnull)license error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT SWIFT_AVAILABILITY(ios,deprecated=0.0.1,message="Use another initialization function with completion block");
 - (void)initilizeReaderWithLicense:(NSData * _Nonnull)license completion:(void (^ _Nonnull)(BOOL, NSString * _Nullable))completion;
 - (void)recognizeImage:(UIImage * _Nonnull)image cameraMode:(BOOL)cameraMode completion:(void (^ _Nullable)(enum DocReaderAction, DocumentReaderResults * _Nullable, NSString * _Nullable))completion;
@@ -341,6 +344,8 @@ SWIFT_CLASS("_TtC14DocumentReader34DocumentReaderCameraViewController")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+
 @class AVCaptureMetadataOutput;
 @class AVMetadataObject;
 @class AVCaptureConnection;
@@ -354,6 +359,9 @@ SWIFT_CLASS("_TtC14DocumentReader34DocumentReaderCameraViewController")
 
 
 
+@interface DocumentReaderCameraViewController (SWIFT_EXTENSION(DocumentReader))
+- (void)removeFocusLayer;
+@end
 
 @class NSNotification;
 
@@ -362,11 +370,6 @@ SWIFT_CLASS("_TtC14DocumentReader34DocumentReaderCameraViewController")
 - (void)sessionWasInterruptedWithNotification:(NSNotification * _Nonnull)notification;
 - (void)sessionInterruptionEndedWithNotification:(NSNotification * _Nonnull)notification;
 - (void)subjectAreaDidChange:(NSNotification * _Nonnull)notification;
-@end
-
-
-@interface DocumentReaderCameraViewController (SWIFT_EXTENSION(DocumentReader))
-- (void)removeFocusLayer;
 @end
 
 
@@ -421,6 +424,7 @@ SWIFT_CLASS("_TtC14DocumentReader26DocumentReaderGraphicField")
 @interface DocumentReaderGraphicField : NSObject
 @property (nonatomic, readonly) enum ResultType sourceType;
 @property (nonatomic, readonly) enum GraphicFieldType fieldType;
+@property (nonatomic, readonly, copy) NSString * _Nonnull fieldName;
 @property (nonatomic, readonly) CGRect boundRect;
 @property (nonatomic, readonly, strong) UIImage * _Nonnull value;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -473,6 +477,8 @@ SWIFT_CLASS("_TtC14DocumentReader21DocumentReaderResults")
 - (NSString * _Nullable)getTextFieldValueByTypeWithFieldType:(enum FieldType)fieldType SWIFT_WARN_UNUSED_RESULT;
 - (DocumentReaderTextField * _Nullable)getTextFieldByTypeWithFieldType:(enum FieldType)fieldType lcid:(enum LCID)lcid SWIFT_WARN_UNUSED_RESULT;
 - (DocumentReaderTextField * _Nullable)getTextFieldByTypeWithFieldType:(enum FieldType)fieldType SWIFT_WARN_UNUSED_RESULT;
+- (DocumentReaderGraphicField * _Nullable)getGraphicFieldByTypeWithFieldType:(enum GraphicFieldType)fieldType SWIFT_WARN_UNUSED_RESULT;
+- (DocumentReaderGraphicField * _Nullable)getGraphicFieldByTypeWithFieldType:(enum GraphicFieldType)fieldType source:(enum ResultType)source SWIFT_WARN_UNUSED_RESULT;
 - (UIImage * _Nullable)getGraphicFieldImageByTypeWithFieldType:(enum GraphicFieldType)fieldType source:(enum ResultType)source SWIFT_WARN_UNUSED_RESULT;
 - (UIImage * _Nullable)getGraphicFieldImageByTypeWithFieldType:(enum GraphicFieldType)fieldType SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -885,6 +891,8 @@ typedef SWIFT_ENUM(NSInteger, FieldType) {
   FieldTypeFt_Airline_Name_Frequent_Flyer = 458,
   FieldTypeFt_In_Tanks = 460,
   FieldTypeFt_Exept_In_Tanks = 461,
+  FieldTypeFt_BankCardNumber = 493,
+  FieldTypeFt_BankCardValidThru = 494,
 };
 
 typedef SWIFT_ENUM(NSInteger, FieldVerificationResult) {
@@ -893,6 +901,11 @@ typedef SWIFT_ENUM(NSInteger, FieldVerificationResult) {
   FieldVerificationResultNotVerified = 2,
   FieldVerificationResultCompareTrue = 3,
   FieldVerificationResultCompareFalse = 4,
+};
+
+typedef SWIFT_ENUM(NSInteger, FrameType) {
+  FrameTypeId1 = 0,
+  FrameTypeMax = 1,
 };
 
 typedef SWIFT_ENUM(NSInteger, GraphicFieldType) {
@@ -1098,6 +1111,7 @@ SWIFT_CLASS("_TtC14DocumentReader13ProcessParams")
 @property (nonatomic) BOOL locate;
 @property (nonatomic) BOOL barcode;
 @property (nonatomic) BOOL graphics;
+@property (nonatomic, copy) NSString * _Nullable scenario;
 @property (nonatomic) BOOL logs;
 @property (nonatomic) BOOL debugSaveImages;
 @property (nonatomic) BOOL debugSaveLogs;
@@ -1144,6 +1158,24 @@ SWIFT_CLASS("_TtC14DocumentReader11RoundedView")
 - (void)layoutSubviews;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_CLASS("_TtC14DocumentReader8Scenario")
+@interface Scenario : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull identifier;
+@property (nonatomic, readonly) enum FrameType frame;
+@property (nonatomic, readonly, copy) NSString * _Nonnull scenarioDescription;
+@property (nonatomic, readonly) BOOL barcodeExt;
+@property (nonatomic, readonly) BOOL faceExt;
+@property (nonatomic, readonly) BOOL multiPageOff;
+@property (nonatomic, readonly, copy) NSString * _Nonnull caption;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
+@end
+
+
+@interface Scenario (SWIFT_EXTENSION(DocumentReader))
+@property (nonatomic, readonly, copy) NSString * _Nonnull description;
 @end
 
 

@@ -32,6 +32,7 @@ typedef NS_ENUM(NSInteger, DocumentReaderCommand)
     ePC_ProcMgr_ProcessImage_ = 12104,                        // process image/images and return result
     ePC_ProcMgr_StartNewDocument_ = 12105,
     ePC_ProcMgr_StartNewPage_ = 12106,
+    ePC_ProcMgr_Unload_ = 12107,                              // unload ProcMgr
 };
 
 typedef NS_ENUM(NSInteger, DocumentReaderLight)

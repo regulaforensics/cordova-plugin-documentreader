@@ -16,11 +16,7 @@
     NSData *licenseData = [[command arguments] objectAtIndex:0];
 
     DocReader *docReader = [[DocReader alloc] initWithProcessParams:nil];
-    docReader.processParams.mrz = YES;
-    docReader.processParams.barcode = YES;
-    docReader.processParams.ocr = NO;
-    docReader.processParams.locate = NO;
-    docReader.processParams.imageQA = NO;
+    docReader.processParams.scenario = @"MrzOrBarcode";
     docReader.videoCaptureMotionControl = NO;
 
     NSError *error = nil;
