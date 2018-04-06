@@ -40,13 +40,19 @@
                     switch (action) {
                         case DocReaderActionComplete: {
                             if (result != nil) {
-                                NSMutableArray *results = [NSMutableArray array];
+                                NSMutableDictionary *totalResults = [NSMutableDictionary new];
+                                NSMutableArray *jsonResults = [NSMutableArray array];
                                 for (DocumentReaderJsonResultGroup *resultObject in result.jsonResult.results) {
-                                    [results addObject:resultObject.jsonResult];
+                                    [jsonResults addObject:resultObject.jsonResult];
+                                }
+                                [totalResults setObject:jsonResults forKey:@"jsonResult"];
+                                UIImage *image = [result getGraphicFieldImageByTypeWithFieldType:GraphicFieldTypeGf_DocumentFront source:ResultTypeRawImage];
+                                if (image != nil) {
+                                    [totalResults setObject:[self encodeToBase64String:image] forKey:@"image"];
                                 }
                                 CDVPluginResult* pluginResult = [CDVPluginResult
                                                                  resultWithStatus:CDVCommandStatus_OK
-                                                                 messageAsArray:[results copy]];
+                                                                 messageAsArray:[totalResults copy]];
                                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                             }
                         }
@@ -70,4 +76,9 @@
                     }
                 }];
 }
+
+- (NSString *) encodeToBase64String:(UIImage *)image {
+    return [UIImagePNGRepresentation(image) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+}
+
 @end
