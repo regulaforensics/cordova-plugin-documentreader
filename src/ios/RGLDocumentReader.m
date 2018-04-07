@@ -52,7 +52,7 @@
                                 }
                                 CDVPluginResult* pluginResult = [CDVPluginResult
                                                                  resultWithStatus:CDVCommandStatus_OK
-                                                                 messageAsArray:[totalResults copy]];
+                                                                 messageAsDictionary:[totalResults copy]];
                                 [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
                             }
                         }
