@@ -47,8 +47,9 @@
                                 }
                                 [totalResults setObject:jsonResults forKey:@"jsonResult"];
                                 UIImage *image = [result getGraphicFieldImageByTypeWithFieldType:GraphicFieldTypeGf_DocumentFront source:ResultTypeRawImage];
+                                NSString *base64Image = [self encodeToBase64String:image];
                                 if (image != nil) {
-                                    [totalResults setObject:[self encodeToBase64String:image] forKey:@"image"];
+                                    [totalResults setObject:base64Image forKey:@"image"];
                                 }
                                 CDVPluginResult* pluginResult = [CDVPluginResult
                                                                  resultWithStatus:CDVCommandStatus_OK
@@ -78,7 +79,7 @@
 }
 
 - (NSString *) encodeToBase64String:(UIImage *)image {
-    return [UIImagePNGRepresentation(image) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    return [UIImageJPEGRepresentation(image, 1.0) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
 }
 
 @end
