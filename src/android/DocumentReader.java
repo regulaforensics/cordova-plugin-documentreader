@@ -2,20 +2,21 @@ package cordova.plugin.documentreader;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.util.Base64;
 
-import com.google.gson.Gson;
 import com.regula.documentreader.api.enums.DocReaderAction;
+import com.regula.documentreader.api.enums.eGraphicFieldType;
 import com.regula.documentreader.api.results.DocumentReaderJsonResultGroup;
 import com.regula.documentreader.api.results.DocumentReaderResults;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
 
 /**
  * This class echoes a string called from JavaScript.
@@ -44,12 +45,17 @@ public class DocumentReader extends CordovaPlugin {
             if(license!=null){
                 byte[] licenseBytes = Base64.decode(license.toString(), Base64.DEFAULT);
                 StringBuilder stringBuilder = new StringBuilder();
-                status = com.regula.documentreader.api.DocumentReader.Instance().initializeReader(cordova.getActivity(),licenseBytes, stringBuilder);
-                if(status){
-                    callbackContext.success();
-                } else {
-                    callbackContext.error("Initialization failed");
-                }
+                com.regula.documentreader.api.DocumentReader.Instance().initializeReader(cordova.getActivity(), licenseBytes, new com.regula.documentreader.api.DocumentReader.DocumentReaderInitCompletion() {
+                    @Override
+                    public void onInitCompleted(boolean b, String s) {
+                        status = b;
+                        if(b){
+                            callbackContext.success();
+                        } else {
+                            callbackContext.error("Initialization failed");
+                        }
+                    }
+                });
             } else {
                 callbackContext.error("License passed is null");
             }
@@ -90,11 +96,7 @@ public class DocumentReader extends CordovaPlugin {
     }
 
     private void showScanner() {
-        com.regula.documentreader.api.DocumentReader.Instance().processParams.mrz = true;
-        com.regula.documentreader.api.DocumentReader.Instance().processParams.barcode = true;
-        com.regula.documentreader.api.DocumentReader.Instance().processParams.ocr = false;
-        com.regula.documentreader.api.DocumentReader.Instance().processParams.locate = false;
-        com.regula.documentreader.api.DocumentReader.Instance().processParams.imageQA = false;
+        com.regula.documentreader.api.DocumentReader.Instance().processParams.scenario = "MrzOrBarcode";
 
         com.regula.documentreader.api.DocumentReader.Instance().showScanner(new com.regula.documentreader.api.DocumentReader.DocumentReaderCompletion() {
             @Override
@@ -102,19 +104,29 @@ public class DocumentReader extends CordovaPlugin {
                 switch (i){
                     case DocReaderAction.COMPLETE:
                         if(documentReaderResults!=null && documentReaderResults.jsonResult!=null) {
-                            ArrayList<String> strings = new ArrayList<String>();
+                            JSONObject resultObj = new JSONObject();
                             JSONArray jsonArray = new JSONArray();
                             int index = 0;
-                            for(DocumentReaderJsonResultGroup group : documentReaderResults.jsonResult.results) {
-                                strings.add(group.jsonResult);
-                                try {
+                            try {
+                                for (DocumentReaderJsonResultGroup group : documentReaderResults.jsonResult.results) {
                                     jsonArray.put(index, new JSONObject(group.jsonResult));
                                     index++;
-                                } catch (JSONException e) {
-                                    callbackContext.error(e.getMessage());
                                 }
+                                resultObj.put("jsonResult", jsonArray);
+
+                                Bitmap bitmap = documentReaderResults.getGraphicFieldImageByType(eGraphicFieldType.GT_DOCUMENT_FRONT);
+                                if(bitmap!=null) {
+                                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                                    bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream);
+                                    byte[] byteArray = byteArrayOutputStream.toByteArray();
+                                    String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                                    resultObj.put("image", encoded);
+                                }
+                            } catch (Exception ex){
+                                callbackContext.error(ex.getMessage());
                             }
-                            callbackContext.success(jsonArray);
+
+                            callbackContext.success(resultObj);
                         }
                         break;
                     case DocReaderAction.CANCEL:
