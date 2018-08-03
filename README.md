@@ -81,8 +81,6 @@ var app = {
     },
     
     onDocReaderReady: function(message) {
-        DocumentReader.scenario("Locate");
-        
         DocumentReader.scanDocument(
             function (message) {
                 alert(message);
