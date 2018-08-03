@@ -11,7 +11,7 @@ cordova plugin add cordova-plugin-documentreader --variable CAMERA_USAGE_DESCRIP
 You can get trial license for demo application at [licensing.regulaforensics.com](https://licensing.regulaforensics.com) (`regula.license` file).
 
 InitializeReader:
-```
+```javascript
 DocumentReader.initReader(
     license,
     function (result) {
@@ -24,7 +24,7 @@ DocumentReader.initReader(
 ```
 
 ScanDocument:
-```
+```javascript
 DocumentReader.scanDocument(
     function (result) {
         // result will contain array of json results.
@@ -43,40 +43,62 @@ DocumentReader.scanDocument(
 4. Get trial license for demo application at [licensing.regulaforensics.com](https://licensing.regulaforensics.com) (`regula.license` file). When you will create license use  ```<YOUR_APPLICATION_ID>``` like bundle ID (see the first paragraph).
 5. Put license to `www/regula.license`.
 6. Put this code inside onDeviceReady method file `index.js` (path: `www/js/index.js`) for calling DocumentReader plugin:
-```
-onDeviceReady: function() {
-    this.receivedEvent('deviceready');
+```javascript
+var app = {
+    
+    ...
+    
+	onDeviceReady: function() {
+	    this.receivedEvent('deviceready');
 
-    window.resolveLocalFileSystemURL(
-        cordova.file.applicationDirectory + "www/regula.license",
-        function (fileEntry) {
-            fileEntry.file(function(file) {
+	    window.resolveLocalFileSystemURL(
+	        cordova.file.applicationDirectory + "www/regula.license",
+	        this.onInitFileEntry,
+            function(e) {
+	            console.log("FileSystem Error");
+	            console.dir(e);
+	        });
+	},
+    
+    onInitFileEntry: function(fileEntry) {
+        fileEntry.file(function(file) {
                 var reader = new FileReader();
                 reader.onloadend = function(e) {
-                    DocumentReader.initReader(
-                        this.result,
-                        function (message) {
-                            DocumentReader.scanDocument(
-                                function (message) {
-                                    alert(message);
-                                },
-                                function (error) {
-                                    alert(error);
-                                }
-                            );
-                        },
-                        function (error) {
-                            alert(error);
-                        }
-                    );
+                    app.onFileLoaded(this.result)
                 }
                 reader.readAsArrayBuffer(file);
             });
-        }, function(e) {
-            console.log("FileSystem Error");
-            console.dir(e);
-        });
-},
+    },
+        
+    onFileLoaded: function(fileResult) {
+        DocumentReader.initReader(
+                fileResult,
+                this.onDocReaderReady,
+                function (error) {
+                    alert(error);
+                }
+            );
+    },
+    
+    onDocReaderReady: function(message) {
+        DocumentReader.scenario("Locate");
+        
+        DocumentReader.scanDocument(
+            function (message) {
+                alert(message);
+                str = JSON.stringify(message, null, 4); // (Optional) beautiful indented output.
+                console.log(str); // Logs output to dev tools console.
+            },
+            function (error) {
+                alert(error);
+            }
+        );
+    },
+    
+    ...
+};
+
+...
 ```
 7. Run ```cordova platform add ios```
 8. Run iOS project.
