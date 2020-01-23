@@ -1,13 +1,17 @@
-# cordova-plugin-documentreader
+# [Deprecated]
+New version you can find here:
+https://github.com/regulaforensics/DocumentReader-Cordova-Plugin
+
+## cordova-plugin-documentreader
 Cordova plugin for reading and validation of identification documents. Using [Regula Document Reader](https://github.com/regulaforensics/DocumentReader-iOS) with core DocumentReaderMRZBarcode.framework inside for iOS version.
 
-## Install
+### Install
 Install plugn:
 ```
 cordova plugin add cordova-plugin-documentreader --variable CAMERA_USAGE_DESCRIPTION="To take photo" --save
 ```
 
-## Usage
+### Usage
 You can get trial license for demo application at [licensing.regulaforensics.com](https://licensing.regulaforensics.com) (`regula.license` file).
 
 InitializeReader:
@@ -35,7 +39,7 @@ DocumentReader.scanDocument(
 );
 ```
 
-## How to build demo application
+### How to build demo application
 1. Open terminal inside empty folder and run ``` cordova create testdocumentreader <YOUR_APPLICATION_ID> DocumentReaderTest ```
 2. Run  ```cd testdocumentreader```
 3. Add plugin: ``` cordova plugin add cordova-plugin-documentreader --variable CAMERA_USAGE_DESCRIPTION="To take photo" --save ```
